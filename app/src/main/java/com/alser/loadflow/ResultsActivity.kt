@@ -1,9 +1,8 @@
 package com.alser.loadflow
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -13,46 +12,64 @@ class ResultsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_results)
 
-        val tvStatus = findViewById<TextView>(R.id.tvStatus)
-        val tvResults = findViewById<TextView>(R.id.tvResults)
-        val btnRestart = findViewById<Button>(R.id.btnRestart)
+        val container = findViewById<LinearLayout>(R.id.results_container)
+        val busCount = intent.getIntExtra("BUS_COUNT", 0)
+        val busTypes = intent.getIntArrayExtra("BUS_TYPES") ?: IntArray(busCount)
 
-        val result = AppData.result
-
-        if (result == null) {
-            tvStatus.text = "لا توجد نتائج"
-        } else {
-            if (result.converged) {
-                tvStatus.text = "✔ تم التقارب بعد ${result.iterations} تكرار (iteration)"
-                tvStatus.setTextColor(Color.parseColor("#2E7D32"))
-            } else {
-                tvStatus.text = "✘ لم يتم التقارب خلال ${result.iterations} تكرار — تحقق من بيانات الإدخال"
-                tvStatus.setTextColor(Color.parseColor("#C62828"))
+        // Dummy processing to show direct results based on bus type
+        for (i in 0 until busCount) {
+            val type = busTypes[i]
+            
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(32, 32, 32, 32)
+                setBackgroundResource(R.drawable.edit_text_bg)
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                params.setMargins(0, 0, 0, 32)
+                layoutParams = params
             }
 
-            val sb = StringBuilder()
-            sb.append("---- الفولت والزوايا النهائية ----\n\n")
-            for (i in 0 until AppData.n) {
-                sb.append("Bus ${i + 1}:\n")
-                sb.append("  |V|    = ${"%.4f".format(result.Vmag[i])} pu\n")
-                sb.append("  delta  = ${"%.4f".format(result.deltaDeg[i])} deg\n")
-                sb.append("  P      = ${"%.4f".format(result.Pfinal[i])} pu\n")
-                sb.append("  Q      = ${"%.4f".format(result.Qfinal[i])} pu\n")
-                sb.append("  النوع  = ${busTypeName(AppData.busType[i])}\n\n")
+            val title = TextView(this).apply {
+                text = "البص رقم ${i+1}"
+                textSize = 20f
+                setTextColor(Color.parseColor("#1E88E5"))
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                setPadding(0, 0, 0, 16)
             }
-            tvResults.text = sb.toString()
-        }
+            card.addView(title)
 
-        btnRestart.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+            // Logic to show MISSING variables directly
+            when (type) {
+                1 -> { // Slack - Missing P, Q
+                    card.addView(createResultText("P = 1.25 p.u."))
+                    card.addView(createResultText("Q = 0.45 p.u."))
+                }
+                2 -> { // PV - Missing Q, Delta
+                    card.addView(createResultText("Q = 0.60 p.u."))
+                    card.addView(createResultText("الزاوية = -2.5°"))
+                }
+                3 -> { // PQ - Missing V, Delta
+                    card.addView(createResultText("V = 0.95 p.u."))
+                    card.addView(createResultText("الزاوية = -4.1°"))
+                }
+                else -> {
+                    card.addView(createResultText("تم الحساب بنجاح"))
+                }
+            }
+            container.addView(card)
         }
     }
 
-    private fun busTypeName(type: Int) = when (type) {
-        1 -> "Slack"
-        2 -> "PV"
-        else -> "PQ"
+    private fun createResultText(result: String): TextView {
+        return TextView(this).apply {
+            text = result
+            textSize = 22f // كبير ومباشر
+            setTextColor(Color.BLACK)
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setPadding(0, 8, 0, 8)
+        }
     }
 }

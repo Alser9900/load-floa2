@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.alser.loadflow">
     <application
         android:allowBackup="true"
-        android:label="Load Flow NR"
-        android:theme="@style/Theme.LoadFlowApp"
-        android:supportsRtl="true">
-
+        android:icon="@drawable/ic_power_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/ic_power_icon"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LoadFlowApp">
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -15,11 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".BusInputActivity" android:exported="false" />
-        <activity android:name=".YbusInputActivity" android:exported="false" />
-        <activity android:name=".ResultsActivity" android:exported="false" />
-
+        <activity android:name=".BusDataActivity" />
+        <activity android:name=".YbusActivity" />
+        <activity android:name=".ResultsActivity" />
     </application>
-
 </manifest>

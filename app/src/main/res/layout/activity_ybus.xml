@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/backgroundColor">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="مصفوفة Ybus (المسامحة)"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@color/primaryColor"
+        android:padding="16dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="أدخل قيم المصفوفة المطلوبة"
+        android:textSize="14sp"
+        android:textColor="@color/textColorSecondary"
+        android:padding="8dp"
+        android:gravity="center"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            
+            <GridLayout
+                android:id="@+id/ybus_grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"/>
+                
+        </HorizontalScrollView>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_solve"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:text="إيجاد المجاهيل وعرض النتائج"
+        android:textSize="18sp"
+        android:backgroundTint="@color/successColor"/>
+</LinearLayout>
